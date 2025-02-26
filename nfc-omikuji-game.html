@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>πおみくじ！</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <style>
+    @font-face {
+      font-family: 'DotFont';
+      src: url('data:font/woff2;base64,d09GMgABAAAAAAScAAsAAAAACTAAAARNAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAABmAAhkQKulioJAE2AiQDWAsuAAQgBYRnB4FxG7oMEdWbE7J/JtgNo6i0tHhaaMHClsZHaERFOZ++nGbwVf7+9Tt33nv3/UApx8R2xzEKFEXEotFGCWTSYkZ55QFV3f8vc9/4ZDLN5DIpNjWFD8gnV1Mpav/K7Mwm5/KcFtPAJIRRPH77zf5CRdpYsaLRbVxK02qmUUoT/bUJtf3/v66+M+kkU9Nae0JdFLdWA5l6y2zJVbU0jUa1yf08/r7UBTUbqwQgAAMA/xd+FwEoYkUEgFsL9NeCmLQrqwL26QDnKvL/Oc/d1vp19/d0WZz5dvZ7+XHoavIcKhA/Pv8vryTi1EqRZUXwQJbhS0+wZ+TcAhTJjsyZfwIQHwfgMcDLt+QEoBrxnLAKUOpB9T9o5Qh8/9kWH3gIkB8PwPIf+PqxmXiO1FTj8fXbT80CoP1kPKLuA1oAAgRcYhAIuQzAyM0FPLyChJiEFBQMKlZ2DhJ6EhoQi4Oa4S/oInBNNdGwKIqpmWEaWDQ5WzYMrVZr0Ni6mqE4GQqMXK1TnZqkWbNGlzljGbRawz9l2YqrblrOlP1N9+YfOMNxzMy0jJO65WvwbMNBt6zqaRkZfq2utlZb62rSbMVxjFI8VfXvST61tqsOGMb26Y4Dx/zUBM2aVYf3tV+2+hfdVbN+1dHjf7b83H7WFcfp/zWOa5uVTHQjLnKMk5bh2UfvDDw2wdUtVy87ttFtSPVtdXy9+2dxz6v9f35X3eGzNPOQNO34jZPSfO9fW3+zrN/VNjtdLlupbm+X5vX8sr3R8l7fH6NW9tjWa9uB9J598YHBI1OHTZb2jFo66sC4+eM3je8JJLVv+31xr4/r+4zsPJQG9R0rXtC+V3rPgT6TO/dfL+1ZOLBzxYrpvXr0m9Ap6f8VE8emNz6N9m3Y0q13z7HjZk9e2XPDsZjl02MfTJveo6/0/qw1izYM7Ny+R6/e02bOGjM4ufXmx2vXJKelJaeGJIXGh9WBwaNDw6L2RE/tGxoWHpISGqJRqZUqKDQqJiJiT2jkodHdPdoFCTk8uvWIDD0U3n55u06N6nMTn733tnHTyMYhWzBxQmhYdOj2gNDw+OiQhNCIvb36DGLx8fsi5oxOHZccER0f2r5x4yK15sDBbXs3T4XtEYfW792D/ZdOWnTpj5WzF0yQNmTN2jK/yYLpi+dInvlz5i1qunLJkhnzF+yW7NJ2QejuvT3bdmv79+rZxzOnZhpxAQAMeG8EhgEA8fzpuQCnptOb8f99MYXAN+PD+a+P8Jy9+VB80QO84J1v7vPnb+WtVGOHZPbpXFWbG4ALnWfOiahVHt8XvyzDHAjgBwEDIRE5MBAriYCRmwL+TwkkPFqAiUcHsEiOaKjEJEoIi0A8AQCOyXvAoMELMLCZRwQMT78AP587JFAiEExitpqlInfmhHXUYh3tQENjFk9OxKqKKlE9csjjwSoiUUVxSSuytD6oigVZ7FixWlLjQxMVlpS1LCQxqsqKD2pFZc08UuqpsTqKs1jXilA7srA0NXBitBNNVs67EFXrxDX1IgeP+oGlCBFVGVzEvCLT9AMpJcxlePH2K0qZ8IEm1OoUSxWVEBtqqJQvr3WqFFndqolqDyppmHPOzJOyV4bVIjFzspb8Lkgxy1JnJfCl9qnNb5oXf0FIYwOGDCOW2OKIKw65sjY6rlS98jYWnCWwMhpgT51wRXZiDxE94azCvgA=') format('woff2');
+      font-weight: normal;
+      font-style: normal;
+    }
+
+    :root {
+      --primary-color: #ff00ff;
+      --secondary-color: #00ffff;
+      --accent-color: #ffff00;
+      --bg-color: #0f0f2f;
+      --text-color: #ffffff;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'DotFont', monospace;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* CRTエフェクト */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+      background-size: 100% 2px, 3px 100%;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    /* グリッド背景 */
+    .grid-background {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        linear-gradient(to right, rgba(255, 0, 255, 0.1) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(0, 255, 255, 0.1) 1px, transparent 1px);
+      background-size: 20px 20px;
+      transform: perspective(500px) rotateX(30deg);
+      z-index: -1;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 500px;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .title {
+      color: var(--primary-color);
+      text-shadow: 0 0 10px var(--primary-color), 0 0 20px var(--primary-color);
+      font-size: 2.5rem;
+      margin-bottom: 2rem;
+      letter-spacing: 2px;
+    }
+
+    .game-area {
+      background: rgba(0, 0, 0, 0.5);
+      border: 2px solid var(--secondary-color);
+      box-shadow: 0 0 15px var(--secondary-color);
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 2rem;
+    }
+
+    .slot-machine {
+      height: 100px;
+      border: 2px solid var(--accent-color);
+      background: rgba(0, 0, 0, 0.8);
+      overflow: hidden;
+      position: relative;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .slot-result {
+      font-size: 2rem;
+      color: var(--accent-color);
+      text-shadow: 0 0 5px var(--accent-color);
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .message {
+      font-size: 1.2rem;
+      margin: 20px 0;
+      color: var(--secondary-color);
+      text-shadow: 0 0 5px var(--secondary-color);
+    }
+
+    .start-btn, .share-btn {
+      background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+      border: none;
+      color: var(--text-color);
+      padding: 12px 24px;
+      font-family: 'DotFont', monospace;
+      font-size: 1.2rem;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 10px;
+      text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+      transition: all 0.3s ease;
+    }
+
+    .start-btn:hover, .share-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+    }
+
+    .share-area {
+      margin-top: 20px;
+    }
+
+    .instruction {
+      margin-top: 1rem;
+      color: var(--secondary-color);
+      font-size: 0.9rem;
+    }
+
+    /* NFCアイコン */
+    .nfc-icon {
+      width: 50px;
+      height: 50px;
+      margin: 0 auto 10px;
+      position: relative;
+    }
+
+    .nfc-icon::before {
+      content: "";
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      top: 5px;
+      left: 5px;
+      border-radius: 50%;
+      border: 3px solid var(--primary-color);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% {
+        transform: scale(0.8);
+        opacity: 0.7;
+      }
+      50% {
+        transform: scale(1);
+        opacity: 1;
+      }
+      100% {
+        transform: scale(0.8);
+        opacity: 0.7;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .title {
+        font-size: 2rem;
+      }
+      .slot-result {
+        font-size: 1.8rem;
+      }
+      .message {
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="grid-background"></div>
+  
+  <div class="container">
+    <h1 class="title">πおみくじ！</h1>
+    
+    <div class="game-area">
+      <div id="start-screen">
+        <div class="nfc-icon"></div>
+        <p class="instruction">NFCタグをタッチするか、下のボタンを押してスタート</p>
+        <button class="start-btn" id="start-btn">おみくじを引く</button>
+      </div>
+      
+      <div id="result-screen" class="hidden">
+        <div class="slot-machine">
+          <div class="slot-result" id="result">???</div>
+        </div>
+        <div class="message" id="message"></div>
+        <div class="share-area">
+          <button class="share-btn" id="share-btn">結果をシェアする</button>
+        </div>
+        <p class="instruction">もう一度引く場合は、NFCタグをタッチしてください</p>
+        <button class="start-btn" id="retry-btn">もう一度引く</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // おみくじ結果の定義
+      const results = [
+        { result: "大吉", message: "胸が高鳴るね！" },
+        { result: "中吉", message: "胸を張って進もう！" },
+        { result: "小吉", message: "胸がほっこりするね。" },
+        { result: "吉", message: "胸を撫で下ろしたくなる。" },
+        { result: "凶", message: "胸がザワつく…" },
+        { result: "大凶", message: "胸が締め付けられる…！" }
+      ];
+
+      // DOM要素
+      const startScreen = document.getElementById('start-screen');
+      const resultScreen = document.getElementById('result-screen');
+      const resultElement = document.getElementById('result');
+      const messageElement = document.getElementById('message');
+      const startBtn = document.getElementById('start-btn');
+      const retryBtn = document.getElementById('retry-btn');
+      const shareBtn = document.getElementById('share-btn');
+
+      // スロットアニメーションの設定
+      function animateSlot() {
+        let counter = 0;
+        const duration = 2; // アニメーション時間（秒）
+        const interval = 100; // スロットの更新間隔（ミリ秒）
+        const iterations = duration * 1000 / interval;
+        
+        return new Promise((resolve) => {
+          const animation = setInterval(() => {
+            const randomIndex = Math.floor(Math.random() * results.length);
+            resultElement.textContent = results[randomIndex].result;
+            
+            counter++;
+            if (counter >= iterations) {
+              clearInterval(animation);
+              resolve();
+            }
+          }, interval);
+        });
+      }
+
+      // おみくじを引く処理
+      async function drawOmikuji() {
+        startScreen.classList.add('hidden');
+        resultScreen.classList.remove('hidden');
+        
+        // スロットアニメーション
+        await animateSlot();
+        
+        // 結果を決定
+        const randomIndex = Math.floor(Math.random() * results.length);
+        const selectedResult = results[randomIndex];
+        
+        // 結果表示とエフェクト
+        gsap.to(resultElement, {
+          scale: 1.2,
+          duration: 0.3,
+          yoyo: true,
+          repeat: 1,
+          ease: "elastic.out(1, 0.3)",
+          onComplete: () => {
+            resultElement.textContent = selectedResult.result;
+            
+            // 震えエフェクト（特に「凶」「大凶」の場合）
+            if (selectedResult.result === "凶" || selectedResult.result === "大凶") {
+              gsap.to(resultElement, {
+                x: "random(-5, 5)",
+                y: "random(-5, 5)",
+                duration: 0.1,
+                repeat: 5,
+                ease: "none",
+                onComplete: () => {
+                  gsap.set(resultElement, { x: 0, y: 0 });
+                }
+              });
+            }
+            
+            // フラッシュエフェクト
+            document.body.style.backgroundColor = "#FFFFFF";
+            setTimeout(() => {
+              document.body.style.backgroundColor = "";
+            }, 50);
+            
+            // 振動エフェクト（対応デバイスのみ）
+            if (navigator.vibrate) {
+              navigator.vibrate(200);
+            }
+            
+            // メッセージ表示
+            messageElement.textContent = selectedResult.message;
+            gsap.fromTo(messageElement, 
+              { opacity: 0, y: 20 }, 
+              { opacity: 1, y: 0, duration: 0.5, delay: 0.3 }
+            );
+          }
+        });
+        
+        // 結果を保存（シェア用）
+        window.omikujiResult = selectedResult;
+      }
+
+      // シェア機能
+      function shareResult() {
+        if (!window.omikujiResult) return;
+        
+        const shareText = `今日の結果は【${window.omikujiResult.result}】！${window.omikujiResult.message}🔮✨ #πおみくじ`;
+        
+        if (navigator.share) {
+          navigator.share({
+            title: 'πおみくじ結果',
+            text: shareText,
+            url: window.location.href
+          }).catch((error) => {
+            console.log('シェアできませんでした:', error);
+            fallbackShare(shareText);
+          });
+        } else {
+          fallbackShare(shareText);
+        }
+      }
+
+      // シェアのフォールバック処理
+      function fallbackShare(text) {
+        // TwitterシェアURL
+        const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
+        window.open(twitterUrl, '_blank');
+      }
+
+      // イベントリスナー
+      startBtn.addEventListener('click', drawOmikuji);
+      retryBtn.addEventListener('click', drawOmikuji);
+      shareBtn.addEventListener('click', shareResult);
+
+      // NFC検出（対応ブラウザのみ）
+      if ('NDEFReader' in window) {
+        try {
+          const ndef = new NDEFReader();
+          ndef.scan().then(() => {
+            console.log("NFCスキャンを開始しました");
+            
+            ndef.addEventListener("reading", ({ message, serialNumber }) => {
+              console.log("NFC読み取り成功:", serialNumber);
+              drawOmikuji();
+            });
+            
+          }).catch(error => {
+            console.log(`NFCスキャンエラー: ${error}`);
+          });
+        } catch (error) {
+          console.log(`NFCサポートエラー: ${error}`);
+        }
+      }
+    });
+  </script>
+</body>
+</html>
